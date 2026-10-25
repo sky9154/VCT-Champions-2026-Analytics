@@ -22,6 +22,7 @@ class RetryLimitExceeded(Exception):
 def _retry_after_seconds(value: str | None) -> float | None:
   if not value:
     return None
+
   try:
     return max(0, float(value))
   except ValueError:

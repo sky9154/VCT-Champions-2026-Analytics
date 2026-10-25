@@ -44,12 +44,15 @@ export const getServiceErrorMessage = (error: unknown): string | null => {
   if (!(error instanceof ApiError)) {
     return null;
   }
+
   if (error.code === "NETWORK_ERROR" || error.code === "INVALID_RESPONSE") {
     return error.userMessage;
   }
+
   if (error.statusCode === 404 || error.statusCode === 405) {
     return "API 服務版本不相容，請更新並重新啟動服務。";
   }
+
   return null;
 };
 
@@ -60,6 +63,7 @@ const request = async <T>(
   body?: unknown
 ): Promise<ApiResponse<T>> => {
   let response: Response;
+
   try {
     const headers: Record<string, string> = { Accept: "application/json" };
 

@@ -87,6 +87,7 @@ def _print_plan_summary(plan: dict, path: Path, coverage_path: Path) -> None:
 
   for warning in plan.get("warnings", []):
     print(f"Warning: {warning}")
+
   for error in plan.get("blockingErrors", []):
     print(f"Blocking error: {error}")
 
@@ -144,8 +145,10 @@ def _print_preflight_summary(report: dict, report_path: Path) -> None:
 
   for warning in report.get("warnings", []):
     print(f"Warning: {warning}")
+
   for blocking_error in report.get("blockingErrors", []):
     print(f"Blocking error: {blocking_error}")
+
   for error in report.get("errors", []):
     print(f"Preflight error: {error}")
 
@@ -178,6 +181,7 @@ def main() -> int:
           file=sys.stderr)
 
     return 2
+
   configure_logging(args.verbose)
 
   if args.offline:
@@ -225,6 +229,7 @@ def main() -> int:
   plan_path = settings.resolve_backend_path(args.preflight_plan
                                             or args.post_apply_preflight_plan
                                             or args.apply_plan)
+
   try:
     plan = load_asset_plan(plan_path)
   except ValueError as error:
@@ -239,6 +244,7 @@ def main() -> int:
         settings,
         plan_path,
         post_apply=args.post_apply_preflight_plan is not None)
+
     _print_preflight_summary(report, report_path)
 
     return 1 if report.get("errors") else 0

@@ -14,8 +14,10 @@ def parse_utc_datetime(
 
     if not normalized:
       return None
+
     if normalized.endswith("Z"):
       normalized = f"{normalized[:-1]}+00:00"
+
     try:
       parsed = datetime.fromisoformat(normalized)
     except ValueError:

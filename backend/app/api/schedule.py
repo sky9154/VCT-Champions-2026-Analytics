@@ -5,7 +5,7 @@ from pymongo.database import Database
 
 from app.api.dependencies import get_database
 from app.api.errors import APIError
-from app.api.responses import success_list, utc_datetime_string
+from app.api.responses import success_object, utc_datetime_string
 from app.api.schemas import APIResponse, ScheduleMatch
 from app.config import get_settings
 from app.services.schedule import SCHEDULE_STATUS_FILTERS, list_schedule
@@ -16,6 +16,7 @@ router = APIRouter()
 def _utc_datetime(value: datetime | None) -> datetime | None:
   if value is None:
     return None
+
   if value.tzinfo is None or value.utcoffset() is None:
     raise APIError(400, "INVALID_PARAMETER",
                    "Datetime parameters must include a timezone.")
@@ -46,7 +47,8 @@ def get_schedule(status: str = Query(default="all", max_length=32),
                           get_settings().tournament_slug, status,
                           stage.strip() if stage and stage.strip() else None,
                           team.strip() if team else None, from_at, to_at)
+
   for match in matches:
     match["scheduledAt"] = utc_datetime_string(match.get("scheduledAt"))
 
-  return success_list(matches)
+  return success_object(matches, {"total": len(matches)})

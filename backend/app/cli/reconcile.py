@@ -14,6 +14,7 @@ def _build_parser(settings: Settings) -> argparse.ArgumentParser:
   parser = argparse.ArgumentParser(
       description="Run a read-only Liquipedia and VCT Reference reconciliation."
   )
+
   parser.add_argument("--event", default="valorant-champions-2026")
   parser.add_argument("--liquipedia-page",
                       default=settings.liquipedia_page_title)
@@ -55,6 +56,7 @@ def _print_summary(report: dict, report_path: Path, exit_code: int) -> None:
   if report["errors"]:
     for error in report["errors"]:
       print(f"Error ({error['provider']}): {error['message']}")
+
   if exit_code == 1:
     print("Review required: conflicts or ambiguous matches were found.")
   elif exit_code == 2:
@@ -99,6 +101,7 @@ def main() -> int:
     return 2
 
   _print_summary(report, report_path, exit_code)
+
   return exit_code
 
 

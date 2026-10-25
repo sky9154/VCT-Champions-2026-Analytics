@@ -12,6 +12,7 @@ from app.utils.logging import configure_logging
 def _build_parser() -> argparse.ArgumentParser:
   parser = argparse.ArgumentParser(
       description="Run the scheduled Liquipedia and VCT data updater.")
+
   parser.add_argument("--once",
                       action="store_true",
                       help="Run one manually requested update cycle and exit.")
@@ -37,18 +38,23 @@ def _print_summary(report: dict, report_path) -> None:
   print(
       f"Apply started: {'yes' if (report.get('mongodb') or {}).get('applyStarted') else 'no'}"
   )
+
   for name, stage in (report.get("stages") or {}).items():
     print(f"{name.capitalize()} stage: {stage.get('status')}")
+
     for key, value in (stage.get("paths") or {}).items():
       print(f"  {key}: {value}")
+
     for key in ("planPath", "preflightPath", "postApplyPreflightPath",
                 "coveragePath"):
       if stage.get(key):
         print(f"  {key}: {stage[key]}")
+
   for error in report.get("errors", []):
     print(
         f"Error {error.get('code')} ({error.get('stage')}): {error.get('message')}"
     )
+
   for warning in report.get("warnings", []):
     print(f"Warning: {warning}")
 
@@ -69,6 +75,7 @@ def main() -> int:
           file=sys.stderr)
 
     return 2
+
   configure_logging(args.verbose)
 
   if not args.once:

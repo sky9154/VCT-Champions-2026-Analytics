@@ -21,14 +21,14 @@ def validate_environment() -> None:
                                         "").casefold() == expected_name
   conda_prefix = os.environ.get("CONDA_PREFIX")
   conda_prefix_matches = False
+
   if conda_prefix:
     try:
       conda_prefix_matches = Path(conda_prefix).resolve() == prefix
     except OSError:
       conda_prefix_matches = False
 
-  if not prefix_matches and not (default_name_matches
-                                 and conda_prefix_matches):
+  if not prefix_matches and not (default_name_matches and conda_prefix_matches):
     raise RuntimeError("請先啟用 VCT-Analytics Python 環境。")
 
 
@@ -69,6 +69,7 @@ class ApiProcessLock:
 
     if lock_file is None:
       return
+
     try:
       lock_file.seek(0)
 
@@ -90,6 +91,7 @@ def is_api_lock_held() -> bool | None:
     acquired = probe.acquire()
   except OSError:
     return None
+
   if not acquired:
     return True
 
@@ -110,6 +112,7 @@ def _read_stop_token() -> str | None:
 def _remove_stop_token(token: str | None) -> None:
   if not token:
     return
+
   try:
     if API_STOP_PATH.read_text(encoding="utf-8").strip() == token:
       API_STOP_PATH.unlink(missing_ok=True)
@@ -132,6 +135,7 @@ def main() -> int:
     sys.path.insert(0, backend_text)
 
   lock = ApiProcessLock()
+
   if not lock.acquire():
     print("VCT Analytics API 已有程序持有執行鎖。", file=sys.stderr)
 
@@ -166,6 +170,7 @@ def main() -> int:
     watcher = threading.Thread(target=watch_stop_request,
                                name="api-stop-watch",
                                daemon=True)
+
     watcher.start()
     print("VCT Analytics API 啟動於 http://127.0.0.1:8591")
 
@@ -178,6 +183,7 @@ def main() -> int:
     import traceback
 
     traceback.print_exc(file=sys.stderr)
+
     return 1
   finally:
     watcher_done.set()

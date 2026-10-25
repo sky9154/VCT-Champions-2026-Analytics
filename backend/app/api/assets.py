@@ -21,10 +21,11 @@ def get_team_logo(slug: str, request: Request):
       "Cache-Control": "public, max-age=3600, must-revalidate",
       "ETag": etag
   }
-  if etag in {
-      value.strip()
-      for value in request.headers.get("if-none-match", "").split(",")
-  } or "*" in request.headers.get("if-none-match", ""):
+
+  if (
+    etag in {value.strip() for value in request.headers.get("if-none-match", "").split(",")}
+    or "*" in request.headers.get("if-none-match", "")
+  ):
     return Response(status_code=304, headers=headers)
 
   return Response(content=data, media_type=mime_type, headers=headers)

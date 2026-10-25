@@ -147,8 +147,7 @@ def main() -> int:
   configure_logging(args.verbose)
   is_plan_mode = args.apply_plan is not None or args.preflight_plan is not None
 
-  if is_plan_mode and any(
-      getattr(args, name) is not None for name in GENERATION_ARGUMENTS):
+  if is_plan_mode and any(getattr(args, name) is not None for name in GENERATION_ARGUMENTS):
     parser.error(
         "--apply-plan/--preflight-plan cannot be combined with parameters for creating a new plan."
     )
@@ -162,6 +161,7 @@ def main() -> int:
                                      settings.report_directory)
     cache_directory = _resolve_path(settings, args.cache_directory,
                                     settings.cache_directory)
+
     try:
       report, reconciliation_path, _ = run_reconciliation(
           settings=settings,
@@ -180,17 +180,26 @@ def main() -> int:
     except (OSError, ValueError) as error:
       print(f"Offline plan generation failed ({type(error).__name__}).",
             file=sys.stderr)
+
       return 2
+
     _print_plan_summary(plan, path)
+
     return 1 if plan.get("blockingErrors") else 0
 
-  plan_path = settings.resolve_backend_path(args.apply_plan
-                                            or args.preflight_plan)
+  selected_plan = args.apply_plan or args.preflight_plan
+
+  if selected_plan is None:
+    parser.error("A Plan path is required.")
+
+  plan_path = settings.resolve_backend_path(selected_plan)
+
   try:
     plan = load_write_plan(plan_path)
   except ValueError as error:
     print(f"{error} MongoDB connected: no; MongoDB writes: 0.",
           file=sys.stderr)
+
     return 2
 
   if args.preflight_plan is not None:

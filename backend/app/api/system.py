@@ -18,6 +18,7 @@ def get_system_settings_endpoint():
 @router.patch("/system/settings", response_model=SystemSettingsResponse)
 def patch_system_settings_endpoint(body: SystemSettingsPatch):
   patch = body.model_dump(exclude_unset=True)
+
   return success_object(update_system_settings(get_settings(), patch))
 
 

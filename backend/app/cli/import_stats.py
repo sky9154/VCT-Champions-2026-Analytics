@@ -137,6 +137,7 @@ def main() -> int:
           file=sys.stderr)
 
     return 2
+
   configure_logging(args.verbose)
 
   if args.offline:
@@ -149,12 +150,14 @@ def main() -> int:
           file=sys.stderr)
 
       return 2
+
     _print_offline_summary(plan, plan_path)
 
     return 1 if plan.get("blockingErrors") else 0
 
   plan_path = settings.resolve_backend_path(args.preflight_plan
                                             or args.apply_plan)
+
   try:
     plan = load_stats_plan(plan_path)
   except ImportRunError as error:

@@ -32,9 +32,11 @@ def get_players(team: str | None = Query(default=None, max_length=128),
   if side not in TREND_SIDES:
     raise APIError(400, "INVALID_PARAMETER",
                    f"Unsupported player side: {side}.")
+
   if sort not in PLAYER_SORT_FIELDS:
     raise APIError(400, "INVALID_PARAMETER",
                    f"Unsupported player sort: {sort}.")
+
   if order not in {"asc", "desc"}:
     raise APIError(400, "INVALID_PARAMETER", "Order must be asc or desc.")
 
@@ -50,6 +52,7 @@ def get_players(team: str | None = Query(default=None, max_length=128),
                              get_settings().tournament_slug, filters["team"],
                              filters["role"], filters["agent"], filters["map"],
                              filters["stage"], side, min_rounds, sort, order)
+
   return success_object(
       data, {
           "filters": filters,
@@ -92,15 +95,19 @@ def get_player_trend(slug: str,
 
   if not clean_slug or len(clean_slug) > 128:
     raise APIError(400, "INVALID_PARAMETER", "Invalid player slug.")
+
   if metric not in PLAYER_TREND_METRICS:
     raise APIError(400, "INVALID_PARAMETER",
                    f"Unsupported player trend metric: {metric}.")
+
   if interval not in TREND_INTERVALS:
     raise APIError(400, "INVALID_PARAMETER",
                    f"Unsupported trend interval: {interval}.")
+
   if side not in TREND_SIDES:
     raise APIError(400, "INVALID_PARAMETER",
                    f"Unsupported trend side: {side}.")
+
   if range_value not in TREND_RANGES:
     raise APIError(400, "INVALID_PARAMETER",
                    f"Unsupported trend range: {range_value}.")

@@ -20,6 +20,7 @@ TEAM_SORT_FIELDS = {
 
 
 @router.get("/teams", response_model=APIResponse[list[TeamRankingItem]])
+
 def get_teams(stage: str | None = Query(default=None, max_length=128),
               region: str | None = Query(default=None, max_length=32),
               sort: str = Query(default="mapWinPercentage", max_length=64),
@@ -27,6 +28,7 @@ def get_teams(stage: str | None = Query(default=None, max_length=128),
               database: Database = Depends(get_database)):
   if sort not in TEAM_SORT_FIELDS:
     raise APIError(400, "INVALID_PARAMETER", f"Unsupported team sort: {sort}.")
+
   if order not in {"asc", "desc"}:
     raise APIError(400, "INVALID_PARAMETER", "Order must be asc or desc.")
 
@@ -70,12 +72,15 @@ def get_team_trend(slug: str,
 
   if not clean_slug or len(clean_slug) > 128:
     raise APIError(400, "INVALID_PARAMETER", "Invalid team slug.")
+
   if metric not in TEAM_TREND_METRICS:
     raise APIError(400, "INVALID_PARAMETER",
                    f"Unsupported team trend metric: {metric}.")
+
   if interval not in TREND_INTERVALS:
     raise APIError(400, "INVALID_PARAMETER",
                    f"Unsupported trend interval: {interval}.")
+
   if range_value not in TREND_RANGES:
     raise APIError(400, "INVALID_PARAMETER",
                    f"Unsupported trend range: {range_value}.")

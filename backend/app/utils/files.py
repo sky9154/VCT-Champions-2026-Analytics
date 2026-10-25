@@ -42,6 +42,7 @@ def write_json_atomic(path: Path,
       if durable:
         output.flush()
         os.fsync(output.fileno())
+
     os.replace(temporary_path, path)
   finally:
     if temporary_path is not None:

@@ -31,6 +31,7 @@ export const useApiResource = <T,>(
   useEffect(() => {
     const handleRefresh = () => setRefreshVersion((current) => current + 1);
     window.addEventListener(API_DATA_REFRESH_EVENT, handleRefresh);
+
     return () => window.removeEventListener(API_DATA_REFRESH_EVENT, handleRefresh);
   }, []);
 
@@ -38,6 +39,7 @@ export const useApiResource = <T,>(
     if (key === null) {
       setResource({ identity: null, state: { status: "idle" } });
       previousData.current = null;
+
       return;
     }
 

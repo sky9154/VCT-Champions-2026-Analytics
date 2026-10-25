@@ -16,9 +16,11 @@ router = APIRouter()
 def get_search(q: str = Query(..., max_length=80),
                database: Database = Depends(get_database)):
   query = q.strip()
+
   if len(query) > 80:
     raise APIError(400, "INVALID_PARAMETER",
                    "Search query must be 80 characters or fewer.")
+
   if not query:
     return success_object({
         "teams": [],
