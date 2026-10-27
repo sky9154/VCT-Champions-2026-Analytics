@@ -61,6 +61,7 @@ class Settings(BaseSettings):
       return ""
 
     times = []
+
     for item in normalized.split(","):
       candidate = item
 

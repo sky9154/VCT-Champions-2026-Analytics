@@ -22,12 +22,14 @@ from app.config import get_settings
 async def lifespan(app: FastAPI):
   app.state.mongodb_client = None
   app.state.mongodb_client_lock = Lock()
+
   try:
     yield
   finally:
     with app.state.mongodb_client_lock:
       client = app.state.mongodb_client
       app.state.mongodb_client = None
+
     if client is not None:
       client.close()
 
@@ -38,6 +40,7 @@ app = FastAPI(title=settings.app_name,
               docs_url=None,
               redoc_url=None,
               openapi_url=None)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://127.0.0.1:5577", "http://localhost:5577"],

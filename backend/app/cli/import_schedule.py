@@ -147,7 +147,8 @@ def main() -> int:
   configure_logging(args.verbose)
   is_plan_mode = args.apply_plan is not None or args.preflight_plan is not None
 
-  if is_plan_mode and any(getattr(args, name) is not None for name in GENERATION_ARGUMENTS):
+  if is_plan_mode and any(
+      getattr(args, name) is not None for name in GENERATION_ARGUMENTS):
     parser.error(
         "--apply-plan/--preflight-plan cannot be combined with parameters for creating a new plan."
     )
@@ -171,8 +172,7 @@ def main() -> int:
           output_directory=output_directory,
           cache_directory=cache_directory,
           refresh=False,
-          offline=True,
-      )
+          offline=True)
 
       plan = build_write_plan(settings, report, reconciliation_path,
                               database_path)
@@ -216,8 +216,7 @@ def main() -> int:
           plan,
           settings,
           plan_path,
-          max_writes=settings.auto_update_max_schedule_writes,
-      )
+          max_writes=settings.auto_update_max_schedule_writes)
   except ImportLockBusy:
     print(
         "Apply skipped because another importer owns the process lock. MongoDB connected: no; MongoDB writes: 0.",

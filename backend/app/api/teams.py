@@ -20,7 +20,6 @@ TEAM_SORT_FIELDS = {
 
 
 @router.get("/teams", response_model=APIResponse[list[TeamRankingItem]])
-
 def get_teams(stage: str | None = Query(default=None, max_length=128),
               region: str | None = Query(default=None, max_length=32),
               sort: str = Query(default="mapWinPercentage", max_length=64),
@@ -42,10 +41,7 @@ def get_teams(stage: str | None = Query(default=None, max_length=128),
 
 
 @router.get("/teams/{slug}", response_model=APIResponse[TeamDetailData])
-def get_team(
-    slug: str,
-    database: Database = Depends(get_database),
-):
+def get_team(slug: str, database: Database = Depends(get_database)):
   if not slug.strip() or len(slug) > 128:
     raise APIError(400, "INVALID_PARAMETER", "Invalid team slug.")
 
